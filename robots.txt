@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /ar
+Sitemap: https://zambuja.vercel.app/sitemap.xml

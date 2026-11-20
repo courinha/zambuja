@@ -88,5 +88,10 @@
       "destination": "https://zambujeira.pt/:path*",
       "permanent": true
     }
-  ]
+  ],
+  "functions": {
+    "api/starlink.js": {
+      "maxDuration": 60
+    }
+  }
 }

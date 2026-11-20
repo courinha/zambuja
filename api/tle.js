@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   try {
     const partes = await Promise.all(IDS.map(id =>
       fetch(`https://celestrak.org/NORAD/elements/gp.php?CATNR=${id}&FORMAT=tle`, {
-        headers: { 'User-Agent': 'zambuja.vercel.app (cache de 3 TLE, a cada 6 h)' },
+        headers: { 'User-Agent': 'zambujeira.pt (cache de 3 TLE, a cada 6 h)' },
         signal: AbortSignal.timeout(9000)
       }).then(r => (r.ok ? r.text() : '')).catch(() => '')));
     const txt = partes.map(t => t.trim()).filter(t => /^1 \d{5}/m.test(t)).join('\n');

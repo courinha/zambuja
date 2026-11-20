@@ -1,5 +1,5 @@
 /* Órbitas (TLE) de todos os satélites Starlink, para o céu em realidade aumentada.
-   Tenta o CelesTrak (grupo "starlink", depois os dados suplementares) e, se falhar, a base SatNOGS.
+   Lê o CelesTrak (grupo "starlink"); o CelesTrak às vezes demora, por isso espera até 52 s.
    A resposta fica 6 h na cache da Vercel: um pedido à fonte a cada 6 h, em vez de um por visitante.
    Se as fontes falharem, a cache continua a servir a última resposta boa até 3 dias. */
 const UA = { 'User-Agent': 'zambujeira.pt (cache do grupo starlink, a cada 6 h)' };
@@ -11,14 +11,7 @@ const tle = txt => {
   return out;
 };
 const FONTES = [
-  ['celestrak', async () => tle(await (await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle', { headers: UA, signal: AbortSignal.timeout(15000) })).text())],
-  ['celestrak-sup', async () => tle(await (await fetch('https://celestrak.org/NORAD/elements/supplemental/sup-gp.php?FILE=starlink&FORMAT=tle', { headers: UA, signal: AbortSignal.timeout(15000) })).text())],
-  ['satnogs', async () => {
-    const j = await (await fetch('https://db.satnogs.org/api/tle/?format=json', { headers: UA, signal: AbortSignal.timeout(20000) })).json();
-    const out = [];
-    for (const s of j) if (s && /STARLINK/i.test(s.tle0 || '') && s.tle1 && s.tle2) out.push(String(s.tle0).replace(/^0 /, '').trim(), s.tle1, s.tle2);
-    return out;
-  }]
+  ['celestrak', async () => tle(await (await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle', { headers: UA, signal: AbortSignal.timeout(52000) })).text())]
 ];
 module.exports = async (req, res) => {
   const erros = [];

@@ -92,6 +92,12 @@
   "functions": {
     "api/starlink.js": {
       "maxDuration": 60
+    },
+    "api/tle.js": {
+      "maxDuration": 30
     }
-  }
+  },
+  "regions": [
+    "cdg1"
+  ]
 }

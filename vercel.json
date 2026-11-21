@@ -95,6 +95,9 @@
     },
     "api/tle.js": {
       "maxDuration": 30
+    },
+    "api/diag.js": {
+      "maxDuration": 60
     }
   },
   "regions": [

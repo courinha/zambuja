@@ -21,6 +21,8 @@ module.exports = async (req, res) => {
     try {
       const out = await ler();
       if (out.length < 900) throw new Error('lista curta (' + out.length / 3 + ')');
+      // /api/starlink?resumo=1 devolve só a contagem (para verificar sem descarregar a lista toda)
+      if (req.query && req.query.resumo) { res.setHeader('Cache-Control', 'no-store'); return res.status(200).json({ fonte: nome, satelites: out.length / 3, primeiro: out.slice(0, 3), erros }); }
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.setHeader('X-Fonte', nome);
       res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=21600, stale-while-revalidate=86400, stale-if-error=259200');

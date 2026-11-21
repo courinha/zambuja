@@ -1,8 +1,8 @@
 /* Órbitas (TLE) de todos os satélites Starlink, para o céu em realidade aumentada.
-   Lê o CelesTrak (grupo "starlink"); o CelesTrak às vezes demora, por isso espera até 52 s.
+   Lê o CelesTrak (grupo "starlink"); se não responder em 14 s (acontece), lê uma cópia pública dos mesmos
+   dados (github.com/astrion-tech/celestrak-mirror, atualizada de 30 em 30 min).
    A resposta fica 6 h na cache da Vercel: um pedido à fonte a cada 6 h, em vez de um por visitante.
    Se as fontes falharem, a cache continua a servir a última resposta boa até 3 dias. */
-const UA = { 'User-Agent': 'zambujeira.pt (cache do grupo starlink, a cada 6 h)' };
 const tle = txt => {
   const l = txt.split(/\r?\n/).map(x => x.trimEnd()).filter(Boolean), out = [];
   for (let i = 0; i + 2 < l.length; i++) {
@@ -10,8 +10,10 @@ const tle = txt => {
   }
   return out;
 };
+const ler = async (u, ms) => tle(await (await fetch(u, { signal: AbortSignal.timeout(ms) })).text());
 const FONTES = [
-  ['celestrak', async () => tle(await (await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle', { headers: UA, signal: AbortSignal.timeout(52000) })).text())]
+  ['celestrak', () => ler('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle', 14000)],
+  ['copia', () => ler('https://raw.githubusercontent.com/astrion-tech/celestrak-mirror/main/tle/starlink.tle', 20000)]
 ];
 module.exports = async (req, res) => {
   const erros = [];
